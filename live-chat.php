@@ -66,8 +66,13 @@ function live_chat_code() {
 
 	$live_chat_sources = get_option('live_chat_js_sources');
 
-	$output = '<div id="live_chat_status"></div>';
-	$output .= '<script type="text/javascript" src="//greeterware.com/Dashboard/cwgen/scripts/library.js" ></script>';
+	$output = '<!-- Live Chat Button Code -->';
+	$output .= '<div id="live_chat_status"></div>';
+	$output .= '<!-- Live Chat Button Code -->';
+
+	$output .= '<!--Start of Chat Window Code-->';
+	$output .= '<div id="floatDiv"></div>';
+	$output .= '<script type="text/javascript" src="http://greeterware.com/Dashboard/cwgen/scripts/library.js" ></script>';
 
 	if ( ! empty( $live_chat_sources ) ) {
 		
@@ -78,7 +83,8 @@ function live_chat_code() {
 		}
 	}
 
-	$output .= '<script type="text/javascript" defer="defer" src="//greeterware.com/Dashboard/cwgen/scripts/chatscriptyui.js" ></script>';
+	$output .= '<script type="text/javascript" defer="defer" src="http://greeterware.com/Dashboard/cwgen/scripts/chatscriptyui.js" ></script>';
+	$output .= '<!--End of Chat Window Code-->';
 	
 	if ( ! empty( $live_chat_sources ) ) {
 
@@ -95,35 +101,34 @@ function live_chat_code() {
 //---Page Output Functions------------------------------------------------//
 //------------------------------------------------------------------------//
 // options page
-function live_chat_plugin_options() {
-  echo '<div class="wrap">';?>
-	<h2>Jacuzzi Live Chat</h2>
-	<p>You need to have a <a href="http://greeterware.com/">Live Chat</a> account in order to use this plugin. This plugin inserts the neccessary code into your Wordpress site automatically without you having to touch anything.</p>
-	<form method="post" action="options.php">
-	<?php settings_fields( 'live_chat_options' ); ?>
-	<table class="form-table">
-		<tr>
-			<th scope="row">Live Chat script sources</th>
-		</tr>
-		<tr>
-			<td>Enter the JavaScript sources (URLs) for your custom Live Chat code. There are 4 scripts that must load for Live Chat. Two are included by default. Please enter only the two sources that include <code>yoursite.com</code> in the URL. Enter each source on a new line.</td>
-		</tr>
-		<tr>
-			<td><textarea type="text" name="live_chat_js_sources" cols="80" rows="5" placeholder="//greeterware.com/Dashboard/cwgen/Company/LiveAdmins/mysite.com/gvars.js"><?php echo get_option('live_chat_js_sources'); ?></textarea></td>
-		</tr>
-		<tr>
-			<th scope="row">Prevent Live Chat from loading on the following pages</th>
-		</tr>
-		<tr>
-			<td><p>Use this field below to blacklist pages from loading the Live Chat button. Uses Wordpress <code>is_page()</code> method. <a href="http://codex.wordpress.org/Function_Reference/is_page">View codex</a>. Enter each page on a new line.</p></td>
-		</tr>
-		<tr>
-			<td><textarea type="text" name="live_chat_blacklist" cols="40" rows="5"><?php echo get_option('live_chat_blacklist'); ?></textarea></td>
-		</tr>
-	</table>
-	<p class="submit"><input type="submit" class="button-primary" value="<?php _e('Save Changes') ?>" /></p>
-<?php
-  echo '</div>';
+function live_chat_plugin_options() { ?>
+	<div class="wrap">
+		<h2>Jacuzzi Live Chat</h2>
+		<p>You need to have a <a href="http://greeterware.com/">Live Chat</a> account in order to use this plugin. This plugin inserts the neccessary code into your Wordpress site automatically without you having to touch anything.</p>
+		<form method="post" action="options.php">
+		<?php settings_fields( 'live_chat_options' ); ?>
+		<table class="form-table">
+			<tr>
+				<th scope="row">Live Chat script sources</th>
+			</tr>
+			<tr>
+				<td>Enter the JavaScript sources (URLs) for your custom Live Chat code. There are 4 scripts that must load for Live Chat. Two are included by default. Please enter only the two sources that include <code>yoursite.com</code> in the URL. Enter each source on a new line.</td>
+			</tr>
+			<tr>
+				<td><textarea type="text" name="live_chat_js_sources" cols="80" rows="5" placeholder="//greeterware.com/Dashboard/cwgen/Company/LiveAdmins/mysite.com/gvars.js"><?php echo get_option('live_chat_js_sources'); ?></textarea></td>
+			</tr>
+			<tr>
+				<th scope="row">Prevent Live Chat from loading on the following pages</th>
+			</tr>
+			<tr>
+				<td><p>Use this field below to blacklist pages from loading the Live Chat button. Uses Wordpress <code>is_page()</code> method. <a href="http://codex.wordpress.org/Function_Reference/is_page">View codex</a>. Enter each page on a new line.</p></td>
+			</tr>
+			<tr>
+				<td><textarea type="text" name="live_chat_blacklist" cols="40" rows="5"><?php echo get_option('live_chat_blacklist'); ?></textarea></td>
+			</tr>
+		</table>
+		<p class="submit"><input type="submit" class="button-primary" value="<?php _e('Save Changes') ?>" /></p>
+	</div><?php
 }
 
 
