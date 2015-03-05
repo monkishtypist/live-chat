@@ -28,7 +28,7 @@ define('LIVE_CHAT_PLUGIN_URL', plugin_dir_url( __FILE__ ));
 //------------------------------------------------------------------------//
 //---Hook-----------------------------------------------------------------//
 //------------------------------------------------------------------------//
-add_action( 'wp_footer', 'live_chat_code', 1 );
+add_action( 'wp_footer', 'live_chat_code');
 add_action( 'admin_menu', 'live_chat_plugin_menu' );
 add_action( 'admin_init', 'live_chat_register_mysettings' );
 add_action( 'admin_notices','live_chat_warn_nosettings');
@@ -88,7 +88,7 @@ function live_chat_code() {
 	
 	if ( ! empty( $live_chat_sources ) ) {
 
-		print( $output );
+		echo $output;
 
 	} else {
 
