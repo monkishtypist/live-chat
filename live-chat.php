@@ -28,10 +28,16 @@ define('LIVE_CHAT_PLUGIN_URL', plugin_dir_url( __FILE__ ));
 //------------------------------------------------------------------------//
 //---Hook-----------------------------------------------------------------//
 //------------------------------------------------------------------------//
-add_action( 'wp_footer', 'live_chat_code');
+add_action( 'wp_enqueue_scripts', 'live_chat_scripts' );
+add_action( 'wp_footer', 'live_chat_code' );
 add_action( 'admin_menu', 'live_chat_plugin_menu' );
 add_action( 'admin_init', 'live_chat_register_mysettings' );
-add_action( 'admin_notices','live_chat_warn_nosettings');
+add_action( 'admin_notices','live_chat_warn_nosettings' );
+add_filter( 'script_loader_tag', function ( $tag, $handle ) {
+	if ( 'livechat_chatscriptyui' !== $handle )
+		return $tag;
+	return str_replace( ' src', ' defer="defer" src', $tag );
+}, 10, 2 );
 
 
 //------------------------------------------------------------------------//
@@ -52,51 +58,40 @@ function live_chat_register_mysettings(){
 //---Output Functions-----------------------------------------------------//
 //------------------------------------------------------------------------//
 function live_chat_code() {
-
 	$live_chat_blacklist = get_option('live_chat_blacklist');
-
 	if ( ! empty( $live_chat_blacklist ) ) {
-		
 		$blacklist_array = explode( "\r\n", $live_chat_blacklist );
-		
 		if ( is_page( $blacklist_array ) )
-				return false;
-	
+			return false;
 	}
-
 	$live_chat_sources = get_option('live_chat_js_sources');
-
 	$output = '<!-- Live Chat Button Code -->';
 	$output .= '<div id="live_chat_status"></div>';
 	$output .= '<!-- Live Chat Button Code -->';
-
 	$output .= '<!--Start of Chat Window Code-->';
 	$output .= '<div id="floatDiv"></div>';
-	$output .= '<script type="text/javascript" src="http://greeterware.com/Dashboard/cwgen/scripts/library.js" ></script>';
-
+	$output .= '<!--End of Chat Window Code-->';
 	if ( ! empty( $live_chat_sources ) ) {
-		
+		echo $output;
+		remove_action("wp_footer", "live_chat_code");
+	} else {
+		return false;
+	}
+}
+function live_chat_scripts() {
+	$live_chat_sources = get_option('live_chat_js_sources');
+	wp_enqueue_script( 'livechat_library', "http://greeterware.com/Dashboard/cwgen/scripts/library.js", array(), '1.0', true );
+	wp_enqueue_script( 'livechat_chatscriptyui', "http://greeterware.com/Dashboard/cwgen/scripts/chatscriptyui.js", array(), '1.0', true );
+	if ( ! empty( $live_chat_sources ) ) {
 		$sources_array = explode( "\r\n", $live_chat_sources );
-		
 		foreach ($sources_array as $key => $value) {
-			$output .= '<script type="text/javascript" src="'.$value.'" ></script>';
+			wp_enqueue_script( 'livechat_source_'.$key, $value, array(), '1.0', true );
 		}
 	}
-
-	$output .= '<script type="text/javascript" defer="defer" src="http://greeterware.com/Dashboard/cwgen/scripts/chatscriptyui.js" ></script>';
-	$output .= '<!--End of Chat Window Code-->';
-	
-	if ( ! empty( $live_chat_sources ) ) {
-
-		echo $output;
-
-	} else {
-
-		return false;
-
-	}
-	
 }
+
+
+
 //------------------------------------------------------------------------//
 //---Page Output Functions------------------------------------------------//
 //------------------------------------------------------------------------//
