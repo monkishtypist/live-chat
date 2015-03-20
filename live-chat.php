@@ -28,8 +28,10 @@ define('LIVE_CHAT_PLUGIN_URL', plugin_dir_url( __FILE__ ));
 //------------------------------------------------------------------------//
 //---Hook-----------------------------------------------------------------//
 //------------------------------------------------------------------------//
-add_action( 'wp_enqueue_scripts', 'live_chat_scripts' );
-add_action( 'wp_footer', 'live_chat_code' );
+if ( ! live_chat_blacklist() ) {
+	add_action( 'wp_enqueue_scripts', 'live_chat_scripts' );
+	add_action( 'wp_footer', 'live_chat_code' );
+}
 add_action( 'admin_menu', 'live_chat_plugin_menu' );
 add_action( 'admin_init', 'live_chat_register_mysettings' );
 add_action( 'admin_notices','live_chat_warn_nosettings' );
@@ -48,22 +50,28 @@ function live_chat_plugin_menu() {
 	add_options_page('Live Chat', 'Live Chat', 'create_users', 'live_chat_options', 'live_chat_plugin_options');
 }
 
-// blacklist settings
+
 function live_chat_register_mysettings(){
 	register_setting('live_chat_options','live_chat_js_sources');
 	register_setting('live_chat_options','live_chat_blacklist');
+}
+
+// blacklist settings
+function live_chat_blacklist() {
+	$live_chat_blacklist = get_option('live_chat_blacklist');
+	if ( ! empty( $live_chat_blacklist ) ) {
+		$blacklist_array = explode( "\r\n", $live_chat_blacklist );
+		if ( is_page( $blacklist_array ) )
+			return true;
+	}
+	return false;
 }
 
 //------------------------------------------------------------------------//
 //---Output Functions-----------------------------------------------------//
 //------------------------------------------------------------------------//
 function live_chat_code() {
-	$live_chat_blacklist = get_option('live_chat_blacklist');
-	if ( ! empty( $live_chat_blacklist ) ) {
-		$blacklist_array = explode( "\r\n", $live_chat_blacklist );
-		if ( is_page( $blacklist_array ) )
-			return false;
-	}
+	
 	$live_chat_sources = get_option('live_chat_js_sources');
 	$output = '<!-- Live Chat Button Code -->';
 	$output .= '<div id="live_chat_status"></div>';
