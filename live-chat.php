@@ -1,6 +1,6 @@
 <?php
 /*
-Plugin Name: Live Chat
+Plugin Name: JHT Live Chat
 Plugin URI: http://ninthlink.com
 Description: Activates Live Chat button. Edit plugin file to update JavaScript code.
 Author: Tim Spinks
